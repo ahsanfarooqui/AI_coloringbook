@@ -32,7 +32,7 @@ def refine_prompt(idea):
             f"Ensure ample space between lines for easy coloring. Attention to detail is not very necessary.")
 
 def generate_image(refined_prompt):
-    """Generates the final image using DALL-E."""
+    """Generates the final image using DALL-E. Responds with URL that is to be returned as-is to display the image url"""
     response = client.images.generate(
         model="dall-e-3",
         prompt=refined_prompt,
@@ -58,7 +58,7 @@ refinement_tool = Tool(
 image_tool = Tool(
     name="Generate Image",
     func=generate_image,
-    description="Generates an AI coloring page based on the refined prompt."
+    description="Generates an AI coloring page based on the refined prompt. Returns URL that is to be returned as output."
 )
 
 # Initialize Agent
