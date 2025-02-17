@@ -62,7 +62,7 @@ agent = initialize_agent(
     tools=[idea_tool, refinement_tool, image_tool],
     llm=llm,
     agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-    verbose=True
+    verbose=True,
     handle_parsing_errors = True
 )
 
