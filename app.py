@@ -23,7 +23,7 @@ if st.button("Generate"):
                     model="dall-e-3",
                     prompt=f"You are an artist that creates templates for people to fill colors in themselves. "
                            f"Create an image with the following information: {user_prompt}. "
-                           f"Make sure to only make outlines and don't fill in any colors."
+                           f"Make sure to only make outlines and don't fill in any colors. Also don't fill any shading or anything. simple black and white lines only."
                             f"Make sure to keep ample space between the lines for people to fill in the colors."
                             f"Attention to detail is not very necessary.",
                     size="1024x1024",
