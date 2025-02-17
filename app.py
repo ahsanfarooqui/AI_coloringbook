@@ -80,10 +80,10 @@ if st.button("Generate"):
             try:
                 result = agent.run(f"Generate a creative idea, refine the prompt, and generate an image for this user prompt. Output should be only an image url: {user_prompt}")
                 image_url = result
-                log_messages.append(f"Generated Idea: {idea}")
-                log_messages.append(f"Refined Prompt: {refined_prompt}")
+                #log_messages.append(f"Generated Idea: {idea}")
+                #log_messages.append(f"Refined Prompt: {refined_prompt}")
                 log_messages.append("Image successfully generated.")
-                st.write(f"**Generated Idea:** {idea}")
+                #st.write(f"**Generated Idea:** {idea}")
                 st.image(image_url, caption="🖼️ Your AI-Generated Coloring Image", use_column_width=True)
             except Exception as e:
                 error_message = f"❌ Error: {str(e)}"
