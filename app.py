@@ -91,7 +91,7 @@ if st.button("Generate"):
         
         with st.spinner("🎨 Generating your image... Please wait!"):
             try:
-                image_url = agent.run(f"Generate an image with this prompt: {refined_prompt}")
+                image_url = agent.run(f"Generate an image with this prompt. The image is generated via DALL-E on a URL. You are expected to only return a valid URL Here's the prompt: {refined_prompt}")
                 log_messages.append("Image successfully generated.")
                 st.image(image_url, caption="🖼️ Your AI-Generated Coloring Image", use_column_width=True)
             except Exception as e:
