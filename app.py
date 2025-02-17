@@ -1,27 +1,23 @@
 import streamlit as st
 from openai import OpenAI
-from langchain.tools import Tool
-from langchain.agents import initialize_agent
 from langchain_openai import ChatOpenAI
-from langchain.agents import AgentType
+from langchain.agents import initialize_agent, AgentType
+from langchain.tools import Tool
 
 # Load API Key from Streamlit Secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API"]
 
-# Initialize OpenAI client
+# Initialize OpenAI client and LLM
 client = OpenAI(api_key=OPENAI_API_KEY)
 llm = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model_name="gpt-4")
 
 def generate_ideas(user_prompt):
     """Generates creative ideas for the image."""
-    response = client.chat.completions.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "You are an AI that generates creative drawing ideas for coloring pages."},
-            {"role": "user", "content": f"Suggest unique variations or related themes for this coloring page idea: {user_prompt}"}
-        ]
-    )
-    return response.choices[0].message.content.strip()
+    response = llm.invoke([
+        {"role": "system", "content": "You are an AI that generates creative drawing ideas for coloring pages."},
+        {"role": "user", "content": f"Suggest unique variations or related themes for this coloring page idea: {user_prompt}"}
+    ])
+    return response.content.strip()
 
 def refine_prompt(idea):
     """Refines the prompt for better image generation."""
@@ -32,7 +28,7 @@ def refine_prompt(idea):
             f"Ensure ample space between lines for easy coloring. Attention to detail is not very necessary.")
 
 def generate_image(refined_prompt):
-    """Generates the final image using DALL-E. Responds with URL that is to be returned as-is to display the image url"""
+    """Generates the final image using DALL-E and returns the image URL."""
     response = client.images.generate(
         model="dall-e-3",
         prompt=refined_prompt,
@@ -58,7 +54,7 @@ refinement_tool = Tool(
 image_tool = Tool(
     name="Generate Image",
     func=generate_image,
-    description="Generates an AI coloring page based on the refined prompt. Returns URL that is to be returned as output."
+    description="Generates an AI coloring page based on the refined prompt. Returns a URL."
 )
 
 # Initialize Agent
@@ -80,19 +76,14 @@ if st.button("Generate"):
     if user_prompt.strip():
         log_messages = []
         
-        with st.spinner("🤖 Thinking of creative ideas..."):
-            idea = agent.run(f"Generate creative ideas for: {user_prompt}")
-            log_messages.append(f"Generated Idea: {idea}")
-            st.write(f"**Generated Idea:** {idea}")
-        
-        with st.spinner("✍️ Refining prompt..."):
-            refined_prompt = agent.run(f"Refine this idea into a detailed prompt: {idea}")
-            log_messages.append(f"Refined Prompt: {refined_prompt}")
-        
-        with st.spinner("🎨 Generating your image... Please wait!"):
+        with st.spinner("🤖 Generating image... Please wait!"):
             try:
-                image_url = agent.run(f"Generate an image with this prompt. The image is generated via DALL-E on a URL. You are expected to only return a valid URL Here's the prompt: {refined_prompt}")
+                result = agent.run(f"Generate a creative idea, refine the prompt, and generate an image for this user prompt. Output should be [idea,refined_prompt,image_url]: {user_prompt}")
+                idea, refined_prompt, image_url = [result[0],result[1],result[2]]
+                log_messages.append(f"Generated Idea: {idea}")
+                log_messages.append(f"Refined Prompt: {refined_prompt}")
                 log_messages.append("Image successfully generated.")
+                st.write(f"**Generated Idea:** {idea}")
                 st.image(image_url, caption="🖼️ Your AI-Generated Coloring Image", use_column_width=True)
             except Exception as e:
                 error_message = f"❌ Error: {str(e)}"
