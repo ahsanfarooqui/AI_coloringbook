@@ -2,7 +2,7 @@ import streamlit as st
 from openai import OpenAI
 from langchain.tools import Tool
 from langchain.agents import initialize_agent
-from langchain.llms import OpenAI as LangChainOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.agents import AgentType
 
 # Load API Key from Streamlit Secrets
@@ -10,7 +10,7 @@ OPENAI_API_KEY = st.secrets["OPENAI_API"]
 
 # Initialize OpenAI client
 client = OpenAI(api_key=OPENAI_API_KEY)
-llm = LangChainOpenAI(api_key=OPENAI_API_KEY, model_name="gpt-4")
+llm = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model_name="gpt-4")
 
 def generate_ideas(user_prompt):
     """Generates creative ideas for the image."""
