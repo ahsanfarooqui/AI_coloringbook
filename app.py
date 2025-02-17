@@ -9,13 +9,13 @@ OPENAI_API_KEY = st.secrets["OPENAI_API"]
 
 # Initialize OpenAI client and LLM
 client = OpenAI(api_key=OPENAI_API_KEY)
-llm = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model_name="gpt-4")
+llm = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model_name="gpt-4",temperature=0.1, frequency_penalty = 0.5)
 
 def generate_ideas(user_prompt):
     """Generates creative ideas for the image."""
     response = llm.invoke([
         {"role": "system", "content": "You are an AI that generates creative drawing ideas for coloring pages."},
-        {"role": "user", "content": f"Suggest unique variations or related themes for this coloring page idea: {user_prompt}"}
+        {"role": "user", "content": f"Suggest 3 unique variations or related themes for this coloring page idea: {user_prompt}"}
     ])
     return response.content.strip()
 
