@@ -78,8 +78,8 @@ if st.button("Generate"):
         
         with st.spinner("🤖 Generating image... Please wait!"):
             try:
-                result = agent.run(f"Generate a creative idea, refine the prompt, and generate an image for this user prompt. Output should be a python list with 3 elements: [idea,refined_prompt,image_url]: {user_prompt}")
-                idea, refined_prompt, image_url = [result[0],result[1],result[2]]
+                result = agent.run(f"Generate a creative idea, refine the prompt, and generate an image for this user prompt. Output should be only an image url: {user_prompt}")
+                image_url = result
                 log_messages.append(f"Generated Idea: {idea}")
                 log_messages.append(f"Refined Prompt: {refined_prompt}")
                 log_messages.append("Image successfully generated.")
