@@ -63,6 +63,7 @@ agent = initialize_agent(
     llm=llm,
     agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
     verbose=True
+    handle_parsing_errors = True
 )
 
 # Streamlit UI
@@ -73,6 +74,12 @@ user_prompt = st.text_area("Enter your prompt:", placeholder="Describe the image
 
 # Generate button
 if st.button("Generate"):
+    from io import StringIO
+    import sys
+
+    old_stdout = sys.stdout
+    sys.stdout = mystdout = StringIO()
+
     if user_prompt.strip():
         log_messages = []
         
@@ -90,10 +97,11 @@ if st.button("Generate"):
                 log_messages.append(error_message)
                 st.error(error_message)
         
+        verbose_output = mystdout.getvalue()
+        sys.stdout = old_stdout
+        
         # Display agent's decision-making log
-        with st.expander("📝 Agent Decision Flow & Logs"):
-            for log in log_messages:
-                st.write(log)
+        st.text_area("Agent Debug Info:", verbose_output, height=300)
     else:
         st.warning("⚠️ Please enter a prompt before generating.")
 
